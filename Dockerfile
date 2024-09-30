@@ -17,7 +17,7 @@ COPY . .
 RUN npm run build
 
 # Etapa 2: Servir a aplicação com Nginx
-FROM nginx:latest
+FROM nginx:alpine
 
 # Copiar os arquivos estáticos gerados na etapa de build para o diretório padrão do Nginx
 COPY --from=build /app/out /usr/share/nginx/html
