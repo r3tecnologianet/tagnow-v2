@@ -1,0 +1,56 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  # build-amd64:
+  #   runs-on: ubuntu-latest  # Runner para arquitetura amd64
+  #   steps:
+  #   - uses: actions/checkout@v4
+
+  #   # Autenticar no Docker Registry Oracle
+  #   - name: Log in to Oracle Cloud Registry
+  #     run: echo "${{ secrets.OCI_AUTH_TOKEN }}" | docker login https://gru.ocir.io -u "${{ secrets.OCI_TENANCY_NAME }}/${{ secrets.OCI_USERNAME }}" --password-stdin
+
+  #   # Construir a imagem Docker para amd64
+  #   - name: Build the Docker image for amd64
+  #     run: docker build . --file Dockerfile --tag gru.ocir.io/${{ secrets.OCI_TENANCY_NAME }}/tagnow-site:amd64-latest
+
+  #   # Verificar se a imagem foi criada corretamente
+  #   - name: Verify Docker image
+  #     run: docker images
+
+  #   # Fazer o push da imagem para o Oracle Cloud Registry
+  #   - name: Push Docker image
+  #     run: docker push gru.ocir.io/${{ secrets.OCI_TENANCY_NAME }}/tagnow-site:amd64-latest
+
+  build-arm64:
+    runs-on: self-hosted  # Runner para arquitetura arm64
+    steps:
+    - uses: actions/checkout@v4
+
+    # Adicionar o usuário do runner ao grupo docker
+    - name: Add runner user to docker group
+      run: |
+        sudo usermod -aG docker $USER
+        sudo systemctl restart docker
+
+    # Autenticar no Docker Registry Oracle
+    - name: Log in to Oracle Cloud Registry
+      run: echo "${{ secrets.OCI_AUTH_TOKEN }}" | sudo docker login https://gru.ocir.io -u "${{ secrets.OCI_TENANCY_NAME }}/${{ secrets.OCI_USERNAME }}" --password-stdin
+
+    # Construir a imagem Docker para arm64
+    - name: Build the Docker image for arm64
+      run: sudo docker build . --file Dockerfile --tag gru.ocir.io/${{ secrets.OCI_TENANCY_NAME }}/tagnow-site:arm64-latest
+
+    # Verificar se a imagem foi criada corretamente
+    # - name: Verify Docker image
+    #   run: sudo docker images
+
+    # Fazer o push da imagem para o Oracle Cloud Registry
+    - name: Push Docker image
+      run: sudo docker push gru.ocir.io/${{ secrets.OCI_TENANCY_NAME }}/tagnow-site:arm64-latest
