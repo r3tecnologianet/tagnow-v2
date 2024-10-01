@@ -1,5 +1,5 @@
 # Etapa 1: Build da aplicação com Node.js
-FROM node:18-alpine
+FROM node:18
 ARG NODE_ENV="production"
 ENV NODE_ENV=${NODE_ENV}
 
